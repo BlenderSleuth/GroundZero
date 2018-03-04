@@ -18,7 +18,7 @@ else ifneq (, $(findstring apple, $(SYS)))
 endif
 
 all:
-	$(CC) $(CFLAGS) $(SOURCE) -o $(BUILD_DIR)$(EXECUTABLE) $(LDFLAGS)
+	@$(CC) $(CFLAGS) $(SOURCE) -o $(BUILD_DIR)$(EXECUTABLE) $(LDFLAGS)
 
 run: all
 	@$(BUILD_DIR)$(EXECUTABLE)
