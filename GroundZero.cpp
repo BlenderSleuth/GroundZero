@@ -1,6 +1,6 @@
 /*******************************************************************************************
 *
-*   Ground Zero Renderer | Display town data model
+*   Ground Zero | Town data model
 *
 *   This program has been created using raylib 1.0 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
@@ -16,7 +16,7 @@ int main() {
     int screenWidth = 800;
     int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, (const char*)"Ground Zero");
+    InitWindow(screenWidth, screenHeight, (void*)"Ground Zero");
     
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
