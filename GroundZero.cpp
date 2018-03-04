@@ -16,7 +16,7 @@ int main() {
     int screenWidth = 800;
     int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, (void*)"Ground Zero");
+    InitWindow(screenWidth, screenHeight, "Ground Zero");
     
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------

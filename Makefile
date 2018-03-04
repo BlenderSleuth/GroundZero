@@ -4,6 +4,7 @@ CC = g++
 CFLAGS = -Wall -Wextra -std=c++11
 LDFLAGS = -lraylib
 SOURCE = GroundZero.cpp GroundZeroRenderer.cpp
+BUILD_DIR = bin/
 EXECUTABLE = groundzero
 
 ifneq (, $(findstring linux, $(SYS)))
@@ -17,7 +18,7 @@ else ifneq (, $(findstring apple, $(SYS)))
 endif
 
 all:
-	@$(CC) $(CFLAGS) $(SOURCE) -o bin/$(EXECUTABLE) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(SOURCE) -o $(BUILD_DIR)$(EXECUTABLE) $(LDFLAGS)
 
 run: all
-	@bin/$(EXECUTABLE)
+	@$(BUILD_DIR)$(EXECUTABLE)

@@ -1,5 +1,5 @@
 # Output folder
-bin/
+bin/*
 
 # Prerequisites
 *.d
