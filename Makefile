@@ -1,9 +1,9 @@
 SYS := $(shell gcc -dumpmachine)
 
-CC = g++
-CFLAGS = -Wall -Wextra -std=c++11
+CC = gcc
+CFLAGS = -Wall -Wextra -std=gnu99
 LDFLAGS = -lraylib
-SOURCE = GroundZero.cpp GroundZeroRenderer.cpp
+SOURCE = GroundZero.c GroundZeroRenderer.c
 BUILD_DIR = bin/
 EXECUTABLE = groundzero
 
@@ -14,7 +14,7 @@ else ifneq (, $(findstring msys, $(SYS)))
   # Windows
 else ifneq (, $(findstring apple, $(SYS)))
   # macOS, use gcc not clang
-  CC = g++-7
+  CC = gcc-7
 endif
 
 all:
