@@ -1,5 +1,8 @@
 # Output folder
 bin/*
+# Platorm-dependant libraries
+lib/*
+include/*
 
 # Prerequisites
 *.d
