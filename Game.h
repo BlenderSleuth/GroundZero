@@ -1,27 +1,28 @@
 /*******************************************************************************************
 *
-*   Ground Zero Renderer | Display town data model
+*   Game | Global state data model
 *
 *   This program has been created using raylib 1.8 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 *
 ********************************************************************************************/
 
-#ifndef __GR_RENDERER_H_INCLUDED__
-#define __GR_RENDERER_H_INCLUDED__
+#ifndef __GAME_H_INCLUDED__
+#define __GAME_H_INCLUDED__ 
 
-class GroundZeroRenderer;
-
-typedef void (*closure)(GroundZeroRenderer*);
-
-class GroundZeroRenderer {
+class Game {
 public:
-	GroundZeroRenderer();
-	~GroundZeroRenderer();
+    int scale = 1;
+    int width();
+    int height();
+    int time = 0;
+    static Game* Instance();
 
-	void mainloop(closure runfunc);
-
-	void relPos(int &x, int &y);
+private:
+    Game() {};
+    const int sWidth = 800;
+    const int sHeight = 450;
+    static Game* singletonInstance;
 };
 
 #endif
