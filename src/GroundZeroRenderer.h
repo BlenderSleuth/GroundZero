@@ -10,6 +10,8 @@
 #ifndef __GR_RENDERER_H_INCLUDED__
 #define __GR_RENDERER_H_INCLUDED__
 
+#include "Building.h"
+
 class GroundZeroRenderer;
 
 typedef void (*closure)(GroundZeroRenderer*);
@@ -19,9 +21,16 @@ public:
 	GroundZeroRenderer();
 	~GroundZeroRenderer();
 
-	void mainloop(closure runfunc);
+	void mainloop();
 
-	void relPos(int &x, int &y);
+	bool drawFPS = false;
+
+    const int width = 1920;
+    const int height = 1080;
+private:
+	void render(int deltaTime);
+
+	void drawBuilding(Building* building);
 };
 
 #endif

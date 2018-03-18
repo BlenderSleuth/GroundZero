@@ -1,5 +1,6 @@
 # Output folder
 bin/*
+tmp/*
 # Platorm-dependant libraries
 lib/*
 include/*

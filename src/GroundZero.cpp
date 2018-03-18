@@ -13,8 +13,11 @@
 #include <raylib.h>
 #include <GLFW/glfw3.h>
 
-#include "Game.h"
 #include "GroundZeroRenderer.h"
+#include "Town.h"
+#include "Building.h"
+#include "Road.h"
+
 
 struct Layers {
     static const int TEXT = 40;
@@ -27,30 +30,28 @@ void getScreenResolution(int &width, int &height) {
     height = mode->height;
 }
 
-// Run every frame
-void runfunc(GroundZeroRenderer* renderer) {
-    ClearBackground(RAYWHITE);
-    int x = 190, y = 200;
-    renderer->relPos(x, y);
-    DrawText("Congrats! You created your first window!", x, y, 20, LIGHTGRAY);
-}
-
 int main() {
     int screenWidth, screenHeight;
     getScreenResolution(screenWidth, screenHeight);
-    Game::Instance()->scale = screenWidth / Game::Instance()->width();
 
     GroundZeroRenderer* renderer = new GroundZeroRenderer();
 
     // SETUP TOWN ---------------------------------------------------------------
-
+    Town* town = Town::Instance();
+    
+    // Building has parameters:      Name      Capacity  Defensibility  Resources
+    Building* b1 = new Building("Minas Morgul",   10,         60,          5);
+    b1->position = {190, 200};
+    b1->size = {350, 150};
+    town->addBuilding(b1);
 
     // MAIN LOOP ----------------------------------------------------------------
-    renderer->mainloop(&runfunc);
+    renderer->mainloop();
 
 
     // CLEANUP ------------------------------------------------------------------
     delete renderer;
+    delete town;
 
     return 0;
 }

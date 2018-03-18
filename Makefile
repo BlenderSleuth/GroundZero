@@ -1,12 +1,13 @@
-SYS := $(shell gcc -dumpmachine)
+CC = clang++
+SYS := $(shell $(CC) -dumpmachine)
 
-CC = g++
-CFLAGS = -std=c++11 -Wall -Wextra
+CFLAGS = -std=c++11 -Wall
 LDFLAGS = -lraylib
 
 SOURCE_DIR = src/
 SOURCE = $(wildcard $(SOURCE_DIR)/*.cpp)
 
+TMP_DIR = tmp/
 BUILD_DIR = bin/
 ASSET_DIR = assets/
 EXECUTABLE = GroundZero
@@ -16,22 +17,24 @@ ifneq (, $(findstring linux, $(SYS)))
   # Linux, link against glfw
   LDFLAGS += -lglfw
   PLATFORM = linux
-else ifneq (, $(findstring mingw, $(SYS)))
+else ifneq (, $(findstring windows, $(SYS)))
   # Windows
-  LDFLAGS += -lglfw3 -lgdi32
+  CFLAGS += -target x86_64-pc-windows-gnu -I"C:/Program Files/raylib/include" -I"C:/Program Files/GLFW/include"
+  LDFLAGS += -L"C:/Program Files/raylib/lib" -L"C:/Program Files/GLFW/lib" -lglfw3 -lgdi32
   WINICON = $(ASSET_DIR)icon.res
-  PLATFORM = win32
+  EXECUTABLE := $(EXECUTABLE).exe
+  PLATFORM = windows
 else ifneq (, $(findstring apple, $(SYS)))
-  # macOS, use gcc not clang
-  CC = g++-7
   CFLAGS += -Iinclude -mmacosx-version-min=10.11
-  LDFLAGS = -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL lib/libraylib.a
+  LDFLAGS += -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL -Llib
   ICON = icon.icns
   PLATFORM = macOS
 endif
 
 all:
+	@rm -f $(BUILD_DIR)$(EXECUTABLE)
 	@$(CC) $(CFLAGS) -o $(BUILD_DIR)$(EXECUTABLE) $(SOURCE) $(LDFLAGS) $(WINICON)
+
 
 define INFO
 <?xml version="1.0" encoding="UTF-8"?>

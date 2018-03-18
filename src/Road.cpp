@@ -1,21 +1,17 @@
 /*******************************************************************************************
 *
-*   Game | Global state data model
+*   Road | Object for modelling roads in our town
 *
 *   This program has been created using raylib 1.8 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 *
 ********************************************************************************************/
 
-#include "Game.h"
+#include <string>
 
-Game* Game::singletonInstance = nullptr;
+#include "Road.h"
 
-Game* Game::Instance() {
-	if (!singletonInstance)
-		singletonInstance = new Game;
-	return singletonInstance;
+Road::Road(std::string name) {
+	this->name = name;
 }
 
-int Game::width() { return this->sWidth * this->scale; }
-int Game::height() { return this->sHeight * this->scale; }
