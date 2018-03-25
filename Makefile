@@ -33,6 +33,7 @@ else ifneq (, $(findstring apple, $(SYS)))
 endif
 
 all:
+	@mkdir -p $(BUILD_DIR)
 	@rm -f $(BUILD_DIR)$(EXECUTABLE)
 	@$(CC) $(CFLAGS) -o $(BUILD_DIR)$(EXECUTABLE) $(SOURCE) $(LDFLAGS) $(WINICON)
 
@@ -64,4 +65,5 @@ ifeq ($(PLATFORM), macOS)
 endif
 
 run: all
+	@mkdir -p $(TMP_DIR)
 	@$(BUILD_DIR)$(EXECUTABLE) > $(TMP_DIR)output.txt
