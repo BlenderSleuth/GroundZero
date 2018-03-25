@@ -10,16 +10,24 @@
 #ifndef __ROAD_H_INCLUDED__
 #define __ROAD_H_INCLUDED__
 
-#include <string>
+#include <utility>
+#include <raylib.h>
+
+class Building;
 
 class Road {
 public:
-	Road(std::string name);
+	Road(int width, int length, Building* b1, Building* b2);
 
-	std::string name;
+	float length = 0, width = 0;
+	bool northsouth = true;
+	Vector2 position = {0, 0};
+
+	std::pair<Building*, Building*> getConnectedBuildings();
 
 private:
-
+	Building* building1;
+	Building* building2;
     
 };
 

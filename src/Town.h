@@ -16,8 +16,6 @@
 #include "Building.h"
 #include "Road.h"
 
-typedef Building* Node;
-
 template <class T>
 using Vector2D = std::vector< std::vector<T> >;
 
@@ -26,7 +24,7 @@ public:
     static Town* Instance();
     int time = 0;
 
-    void update(GroundZeroRenderer* renderer, int deltaTime);
+    void update(GroundZeroRenderer* renderer, float deltaTime);
 
     void addBuilding(Building* building);
     void addRoad(Road* road);

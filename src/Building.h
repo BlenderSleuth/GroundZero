@@ -11,21 +11,26 @@
 #define __BUILDING_H_INCLUDED__
 
 #include <string>
+#include <vector>
 #include <raylib.h>
-#include "Point.h"
 
+class Road;
 class Building {
 public:
 	Building(std::string name, int capacity, int defensibility, int resources);
 
 	int capacity, defensibility, resources;
+
 	std::string name;
 
 	Vector2 position = {0, 0};
 	Vector2 size = {1, 1};
+	Color colour = WHITE;
+
+	int getID();
 
 private:
-	
+	int id;
     
 };
 

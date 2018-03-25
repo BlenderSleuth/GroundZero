@@ -10,6 +10,7 @@
 #ifndef __GR_RENDERER_H_INCLUDED__
 #define __GR_RENDERER_H_INCLUDED__
 
+#include "Road.h"
 #include "Building.h"
 
 class GroundZeroRenderer;
@@ -23,13 +24,16 @@ public:
 
 	void mainloop();
 
-	bool drawFPS = false;
+	bool showFPS = true;
 
-    const int width = 1920;
-    const int height = 1080;
+	Color backgroundColour = (Color){0, 114, 24, 128};
+
+    const int width = 1000;
+    const int height = 1000;
 private:
-	void render(int deltaTime);
+	void render(float deltaTime);
 
+	void drawRoad(Road* road);
 	void drawBuilding(Building* building);
 };
 

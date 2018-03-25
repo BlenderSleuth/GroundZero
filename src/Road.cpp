@@ -7,11 +7,19 @@
 *
 ********************************************************************************************/
 
-#include <string>
+#include <utility>
 
 #include "Road.h"
+#include "Building.h"
 
-Road::Road(std::string name) {
-	this->name = name;
+Road::Road(int width, int length, Building* b1, Building* b2) {
+	this->width = width;
+	this->length = length;
+	this->building1 = b1;
+	this->building2 = b2;
+}
+
+std::pair<Building*, Building*> Road::getConnectedBuildings() {
+	return {this->building1, this->building2};
 }
 

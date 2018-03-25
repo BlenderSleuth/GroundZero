@@ -17,14 +17,15 @@ ifneq (, $(findstring linux, $(SYS)))
   # Linux, link against glfw
   LDFLAGS += -lglfw
   PLATFORM = linux
-else ifneq (, $(findstring windows, $(SYS)))
+else ifneq (, $(findstring w64, $(SYS)))
   # Windows
-  CFLAGS += -target x86_64-pc-windows-gnu -I"C:/Program Files/raylib/include" -I"C:/Program Files/GLFW/include"
+  CFLAGS += -I"C:/Program Files/raylib/include" -I"C:/Program Files/GLFW/include"
   LDFLAGS += -L"C:/Program Files/raylib/lib" -L"C:/Program Files/GLFW/lib" -lglfw3 -lgdi32
   WINICON = $(ASSET_DIR)icon.res
   EXECUTABLE := $(EXECUTABLE).exe
   PLATFORM = windows
 else ifneq (, $(findstring apple, $(SYS)))
+  # macOS
   CFLAGS += -Iinclude -mmacosx-version-min=10.11
   LDFLAGS += -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL -Llib
   ICON = icon.icns
@@ -63,4 +64,4 @@ ifeq ($(PLATFORM), macOS)
 endif
 
 run: all
-	@$(BUILD_DIR)$(EXECUTABLE)
+	@$(BUILD_DIR)$(EXECUTABLE) > $(TMP_DIR)output.txt

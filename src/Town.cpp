@@ -30,7 +30,7 @@ Town* Town::Instance() {
         singletonInstance = new Town;
     return singletonInstance;
 }
-void Town::update(GroundZeroRenderer* renderer, int deltaTime) {
+void Town::update(GroundZeroRenderer* renderer, float deltaTime) {
     
 }
 
