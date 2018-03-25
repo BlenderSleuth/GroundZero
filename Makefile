@@ -14,7 +14,7 @@ EXECUTABLE = GroundZero
 PLATFORM = unknown
 
 ifneq (, $(findstring linux, $(SYS)))
-  # Linux, link against glfw
+  # Linux
   LDFLAGS += -lglfw
   PLATFORM = linux
 else ifneq (, $(findstring w64, $(SYS)))
@@ -26,8 +26,8 @@ else ifneq (, $(findstring w64, $(SYS)))
   PLATFORM = windows
 else ifneq (, $(findstring apple, $(SYS)))
   # macOS
-  CFLAGS += -Iinclude -mmacosx-version-min=10.11
-  LDFLAGS += -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL -Llib
+  CFLAGS += -mmacosx-version-min=10.10
+  LDFLAGS += -lglfw3 -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL
   ICON = icon.icns
   PLATFORM = macOS
 endif

@@ -17,18 +17,18 @@ class Building;
 
 class Road {
 public:
-	Road(int width, int length, Building* b1, Building* b2);
+	Road(int width, Building* b1, Building* b2);
 
-	float length = 0, width = 0;
-	bool northsouth = true;
-	Vector2 position = {0, 0};
+	int width;
+
+	Building* building1;
+	Building* building2;
 
 	std::pair<Building*, Building*> getConnectedBuildings();
 
+	int length();
+   
 private:
-	Building* building1;
-	Building* building2;
-    
 };
 
-#endif
+#endif // __ROAD_H_INCLUDED__

@@ -14,24 +14,28 @@
 #include <vector>
 #include <raylib.h>
 
+#include "Entity.h"
+
 class Road;
 class Building {
 public:
 	Building(std::string name, int capacity, int defensibility, int resources);
 
-	int capacity, defensibility, resources;
-
 	std::string name;
+	int capacity, defensibility, resources;
 
 	Vector2 position = {0, 0};
 	Vector2 size = {1, 1};
 	Color colour = WHITE;
 
+	std::vector<Entity*> entities;
+	bool addEntity(Entity* entity);
+	bool moveEntityTo(Entity* entity, Building* building);
+
 	int getID();
 
 private:
 	int id;
-    
 };
 
-#endif
+#endif // __BUILDING_H_INCLUDED__

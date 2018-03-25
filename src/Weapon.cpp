@@ -1,22 +1,14 @@
 /*******************************************************************************************
 *
-*   Entity | Humans and zombies
+*   Weapon | A transferable battle object between entities and buildings
 *
 *   This program has been created using raylib 1.8 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 *
 ********************************************************************************************/
 
-#include <string>
+#include "Weapon.h"
 
-#include "Building.h"
-#include "Entity.h"
-
-Entity::Entity(std::string name) {
-	this->name = name;
+Weapon::Weapon(WeaponType type) {
+	this->type = type;
 }
-
-void Entity::findNextPath() {
-	// Nothing here yet...
-}
-

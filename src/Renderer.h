@@ -7,29 +7,26 @@
 *
 ********************************************************************************************/
 
-#ifndef __GR_RENDERER_H_INCLUDED__
-#define __GR_RENDERER_H_INCLUDED__
+#ifndef __RENDERER_H_INCLUDED__
+#define __RENDERER_H_INCLUDED__
 
-#include "Road.h"
 #include "Building.h"
+#include "Road.h"
 
-class GroundZeroRenderer;
-
-typedef void (*closure)(GroundZeroRenderer*);
-
-class GroundZeroRenderer {
+class Renderer {
 public:
-	GroundZeroRenderer();
-	~GroundZeroRenderer();
+	Renderer();
+	~Renderer();
 
 	void mainloop();
 
 	bool showFPS = true;
 
-	Color backgroundColour = (Color){0, 114, 24, 128};
+	Color backgroundColour = BLACK;
 
     const int width = 1000;
     const int height = 1000;
+
 private:
 	void render(float deltaTime);
 
@@ -37,4 +34,4 @@ private:
 	void drawBuilding(Building* building);
 };
 
-#endif
+#endif // __RENDERER_H_INCLUDED__
