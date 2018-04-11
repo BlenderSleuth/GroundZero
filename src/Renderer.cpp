@@ -14,6 +14,21 @@
 #include "Town.h"
 #include "Renderer.h"
 
+Vector2 operator + (Vector2 v1, Vector2 v2) {
+    return Vector2({v1.x + v2.x, v1.y + v2.y});
+}
+void operator += (Vector2 &v1, Vector2 v2) {
+    v1 = v1 + v2;
+}
+
+Vector2 operator - (Vector2 v1, Vector2 v2) {
+    return Vector2({v1.x - v2.x, v1.y - v2.y});
+}
+void operator -= (Vector2 &v1, Vector2 v2) {
+    v1 = v1 - v2;
+}
+
+
 // Setup the renderer
 Renderer::Renderer() {
     InitWindow(this->width, this->height, (void*)"Ground Zero");
@@ -26,8 +41,8 @@ Renderer::~Renderer() {
 
 void Renderer::drawRoad(Road* road) {
     // Get start and end position of road - Positions of buildings that it connects to:
-    Vector2 start = road->building1->position;
-    Vector2 end = road->building2->position;
+    Vector2 start = road->building1->position + worldPosition;
+    Vector2 end = road->building2->position + worldPosition;
 
     // Draw a line with a thickness that represents width, road colour is dark grey:
     DrawLineEx(start, end, road->width, DARKGRAY);
@@ -40,6 +55,9 @@ void Renderer::drawBuilding(Building* building) {
         building->position.x - building->size.x/2,
         building->position.y - building->size.y/2,
     };
+
+    position += worldPosition;
+
     // Draw rectangle of building, with converted position, size and colour
     DrawRectangleV(position, building->size, building->colour);
 
@@ -49,7 +67,7 @@ void Renderer::drawBuilding(Building* building) {
     int textWidth = MeasureText(building->name.c_str(), fontSize);
 
     // Draw building name
-    DrawText(building->name.c_str(), building->position.x-textWidth/2, position.y+5, fontSize, fontColour);
+    DrawText(building->name.c_str(), position.x+building->size.x/2-textWidth/2, position.y+5, fontSize, fontColour);
     
     // Draw building stats (capacity, defensibility and resources)
     DrawText(std::to_string(building->capacity).c_str(), 
@@ -97,6 +115,19 @@ void Renderer::render(float deltaTime) {
 void Renderer::mainloop() {
     // Detect window close button or ESC key
     while (!WindowShouldClose()) {
+
+        // Move the world position based on mouse movement
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+            Vector2 currentPos = GetMousePosition();
+            if (this->mouseDown) {
+                this->worldPosition += currentPos - lastMousePos;
+            } else {
+                this->mouseDown = true;
+            }
+            this->lastMousePos = currentPos;
+        } else {
+            this->mouseDown = false;
+        }
 
         // Time in seconds since last frame
         float dt = GetFrameTime();

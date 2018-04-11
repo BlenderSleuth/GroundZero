@@ -24,6 +24,11 @@ public:
 
 	Color backgroundColour = BLACK;
 
+	Camera2D camera;
+	Vector2 worldPosition = {0, 0};
+	bool mouseDown = false;
+	Vector2 lastMousePos = {0, 0};
+
     const int width = 1000;
     const int height = 1000;
 

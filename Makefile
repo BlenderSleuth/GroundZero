@@ -20,7 +20,7 @@ ifneq (, $(findstring linux, $(SYS)))
 else ifneq (, $(findstring w64, $(SYS)))
   # Windows
   CFLAGS += -I"C:/Program Files/raylib/include" -I"C:/Program Files/GLFW/include"
-  LDFLAGS += -L"C:/Program Files/raylib/lib" -L"C:/Program Files/GLFW/lib" -lglfw3 -lgdi32
+  LDFLAGS += -L"C:/Program Files/raylib/lib" -L"C:/Program Files/GLFW/lib" -lglfw3 -lgdi32 -static -Wl,--allow-multiple-definition
   WINICON = $(ASSET_DIR)icon.res
   EXECUTABLE := $(EXECUTABLE).exe
   PLATFORM = windows
