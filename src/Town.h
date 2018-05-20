@@ -42,10 +42,12 @@ public:
     // Finshed building town, create adjacency matrix
     void finishCreate();
 
+    Vector2 townCentre;
+
     int getAdjacencyMatrixCell(int x, int y);
     void printAdjacencyMatrix();
 
-    // Decostructor
+    // Deconstructor
     ~Town();
 
 private:
@@ -61,7 +63,6 @@ private:
 
     // Unitialisised pointer to adjacency matrix
     int* adjMat;
-
 };
 
 #endif // __TOWN_H_INCLUDED__

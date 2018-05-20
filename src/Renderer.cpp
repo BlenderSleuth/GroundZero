@@ -9,30 +9,36 @@
 
 #include <string>
 #include <iostream>
+#include <GLFW/glfw3.h>
 #include <raylib.h>
+#include <raymath.h>
 
 #include "Town.h"
+#include "Utils.h"
 #include "Renderer.h"
-
-Vector2 operator + (Vector2 v1, Vector2 v2) {
-    return Vector2({v1.x + v2.x, v1.y + v2.y});
-}
-void operator += (Vector2 &v1, Vector2 v2) {
-    v1 = v1 + v2;
-}
-
-Vector2 operator - (Vector2 v1, Vector2 v2) {
-    return Vector2({v1.x - v2.x, v1.y - v2.y});
-}
-void operator -= (Vector2 &v1, Vector2 v2) {
-    v1 = v1 - v2;
-}
-
 
 // Setup the renderer
 Renderer::Renderer() {
-    InitWindow(this->width, this->height, (void*)"Ground Zero");
-    SetTargetFPS(80);
+    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    
+    InitWindow(0, 0, (void*)"Ground Zero");
+    width = GetScreenWidth();
+    height = GetScreenHeight();
+
+    SetWindowMinSize(1024, 768);
+
+    Image icon = LoadImage("assets/icon.png");   
+    SetWindowIcon(icon);
+    
+    SetTargetFPS(60);
+    HideCursor();
+
+    this->centre = (Vector2){width/2, height/2};
+
+    camera.offset = -Town::Instance()->townCentre + this->centre;
+    camera.target = Town::Instance()->townCentre;
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
 }
 // Destroy the renderer
 Renderer::~Renderer() {  
@@ -41,8 +47,8 @@ Renderer::~Renderer() {
 
 void Renderer::drawRoad(Road* road) {
     // Get start and end position of road - Positions of buildings that it connects to:
-    Vector2 start = road->building1->position + worldPosition;
-    Vector2 end = road->building2->position + worldPosition;
+    Vector2 start = road->building1->position;
+    Vector2 end = road->building2->position;
 
     // Draw a line with a thickness that represents width, road colour is dark grey:
     DrawLineEx(start, end, road->width, DARKGRAY);
@@ -55,8 +61,6 @@ void Renderer::drawBuilding(Building* building) {
         building->position.x - building->size.x/2,
         building->position.y - building->size.y/2,
     };
-
-    position += worldPosition;
 
     // Draw rectangle of building, with converted position, size and colour
     DrawRectangleV(position, building->size, building->colour);
@@ -85,28 +89,32 @@ void Renderer::render(float deltaTime) {
     // Start drawing context
     BeginDrawing();
     // Clear the last frame
-    ClearBackground(this->backgroundColour);
+    ClearBackground(backgroundColour);
+
+    Begin2dMode(camera);
+    // Draw roads as edges first
+    for (Road* road : Town::Instance()->getRoads()) {
+        drawRoad(road);
+    }
+
+    // Draw buildings as nodes second
+    for (Building* building : Town::Instance()->getBuildings()) {
+        drawBuilding(building);
+    }
+    DrawCircleV(mouse, 10.0f/camera.zoom, RED);
+
+    End2dMode();
 
     // If show FPS is on, draw the FPS
-    if (this->showFPS) {
+    if (showFPS) {
         int fps = 0; // deltaTime is in seconds
         if (deltaTime > 0)
             fps = (1.0/deltaTime + 0.5); // Round to nearest FPS rather than truncate
         // Draw in top left corner in red text
         std::string text = std::to_string(fps) + " FPS";
-        DrawText(text.c_str(), 15, 10, 30, RED);
+        DrawText(text.c_str(), 30, 70, 30, RED);
     }
-
-    // Draw roads as edges first
-    for (Road* road : Town::Instance()->getRoads()) {
-        this->drawRoad(road);
-    }
-
-    // Draw buildings as nodes second
-    for (Building* building : Town::Instance()->getBuildings()) {
-        this->drawBuilding(building);
-    }
-
+    
     // End drawing context
     EndDrawing();
 }
@@ -116,18 +124,37 @@ void Renderer::mainloop() {
     // Detect window close button or ESC key
     while (!WindowShouldClose()) {
 
+        // Highlight buildings when mouse over
+        Vector2 currentPos = GetMousePosition();
+        mouse = currentPos - camera.offset;
+
         // Move the world position based on mouse movement
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-            Vector2 currentPos = GetMousePosition();
-            if (this->mouseDown) {
-                this->worldPosition += currentPos - lastMousePos;
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) { 
+            if (mouseDown) {
+                Vector2 delta = (currentPos - lastMousePos)/camera.zoom;
+                camera.offset += delta;
+                camera.target -= delta;
             } else {
-                this->mouseDown = true;
+                mouseDown = true;
             }
-            this->lastMousePos = currentPos;
+            lastMousePos = currentPos;
         } else {
-            this->mouseDown = false;
+            mouseDown = false;
         }
+
+        // Check building rectangles
+        for (Building* building : Town::Instance()->getBuildings()) {
+            if (CheckCollisionPointRec(currentPos - camera.offset, building->boundingBox())) {
+                building->highlight();
+            } else {
+                building->dehighlight();
+            }
+        }
+
+        // Camera zoom controls
+        camera.zoom += ((float)GetMouseWheelMove()*0.5f);
+        if (camera.zoom > 3.0f) camera.zoom = 3.0f;
+        else if (camera.zoom < 0.5f) camera.zoom = 0.5f;
 
         // Time in seconds since last frame
         float dt = GetFrameTime();
@@ -136,6 +163,6 @@ void Renderer::mainloop() {
         Town::Instance()->update(this, dt);
 
         // Render town
-        this->render(dt);
+        render(dt);
     }
 }

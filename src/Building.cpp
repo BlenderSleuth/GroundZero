@@ -28,9 +28,9 @@ Building::Building(std::string name, int capacity, int defensibility, int resour
 // Will return true if capacity limit is not reached
 bool Building::addEntity(Entity* entity) {
 	// Check capcaity
-	if (this->entities.size() < this->capacity) {
+	if (entities.size() < capacity) {
 		// Add entity to building
-		this->entities.push_back(entity);
+		entities.push_back(entity);
 		entity->building = this;
 		return true;
 	} else {
@@ -42,8 +42,8 @@ bool Building::addEntity(Entity* entity) {
 bool Building::moveEntityTo(Entity* entity, Building* building) {
 	// Find entity in this building entity list:
 	int index = -1;
-	for (int i = 0; i < this->entities.size(); i++) {
-		if (this->entities[i] == entity) {
+	for (int i = 0; i < entities.size(); i++) {
+		if (entities[i] == entity) {
 			index = i;
 		}
 	}
@@ -55,15 +55,33 @@ bool Building::moveEntityTo(Entity* entity, Building* building) {
 	// If successfully added
 	if (building->addEntity(entity)) {
 		// Remove from this building
-		this->entities.erase(entities.begin()+index);
+		entities.erase(entities.begin()+index);
 		return true;
 	} else {
 		return false;
 	}
 }
 
+Rectangle Building::boundingBox() {
+	return (Rectangle){(int)(position.x - size.x/2), (int)(position.y - size.y/2), (int)size.x, (int)size.y};
+}
+
+void Building::highlight() {
+	if (!highlighted) {
+		highlighted = true;
+		originalColour = colour;
+		colour = BLUE;
+	}
+}
+void Building::dehighlight() {
+	if (highlighted) {
+		highlighted = false;
+		colour = originalColour;
+	}
+}
+
 // ID should not be changed
 int Building::getID() {
-	return this->id;
+	return id;
 }
 

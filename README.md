@@ -2,9 +2,10 @@
 
 ### To Build
 This project requires [Raylib](https://github.com/raysan5/raylib).  
-It uses an old-fashioned makefile because why not, and I usually statically link it so it can be shared easily.  
+It uses an old-fashioned makefile because this is a small project, and I usually statically link it so it can be shared easily.  
 Just make sure raylib and possibly [GLFW](https://github.com/glfw/glfw) is in your search path somewhere and it should build fine.  
-I use MSYS2 64bit with Clang on Windows and Xcode on macOS.  
+I use MSYS2 64bit with Clang on Windows and Xcode on macOS.
+More detailed steps in [Building.md](docs/Building.md).
 
 ### **ADTs** used in GroundZero:
 - A graph **ADT** represents the Town, with building objects as nodes and road objects as edges. Which nodes are connected (and by what distance) can be access via an adjacency matrix. The graph supports adding nodes (buildings) and edges (roads) to itself, and querying connections. It does not support removing nodes and edges as the model the graph represents (the town) does not change once it has been created.

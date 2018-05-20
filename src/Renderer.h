@@ -15,28 +15,30 @@
 
 class Renderer {
 public:
-	Renderer();
-	~Renderer();
+    Renderer();
+    ~Renderer();
+    void mainloop();
 
-	void mainloop();
+    float width = 0;
+    float height = 0;
+    Vector2 centre;
+    Vector2 mouse;
 
-	bool showFPS = true;
+    bool showFPS = true;
 
-	Color backgroundColour = BLACK;
+    Color backgroundColour = BLACK;
 
-	Camera2D camera;
-	Vector2 worldPosition = {0, 0};
-	bool mouseDown = false;
-	Vector2 lastMousePos = {0, 0};
+    Camera2D camera;
 
-    const int width = 1000;
-    const int height = 1000;
+    bool mouseDown = false;
+    Vector2 lastMousePos = {0, 0};
+
 
 private:
-	void render(float deltaTime);
+    void render(float deltaTime);
 
-	void drawRoad(Road* road);
-	void drawBuilding(Building* building);
+    void drawRoad(Road* road);
+    void drawBuilding(Building* building);
 };
 
 #endif // __RENDERER_H_INCLUDED__

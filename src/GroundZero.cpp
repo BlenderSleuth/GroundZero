@@ -105,7 +105,7 @@ void createTown(Town* town) {
     Building* bigal = new Building("Big Al's",     30,         60,           15);
     bigal->position = {680, 630};
     bigal->size = {140, 150};
-    bigal->colour = BLUE;
+    bigal->colour = MAGENTA;
     town->addBuilding(bigal);
 
     // Road has parameters:  width    from    to
@@ -186,23 +186,27 @@ void createTown(Town* town) {
     Road* road15 = new Road(  20,   bigmac, dankmo);
     town->addRoad(road15);
 
+    // Set town centre (for position)
+    town->townCentre = {500, 500};
+
     // Signal that we have finished building the town.
     town->finishCreate();
 
     // town->printAdjacencyMatrix();
 }
 
-int main() {
-    // Renderer object controls how objects look
-    Renderer* renderer = new Renderer();
 
+
+int main() {
     // SETUP TOWN ---------------------------------------------------------------
     Town* town = Town::Instance();
     createTown(town);
 
+    // Renderer object controls how objects look
+    Renderer* renderer = new Renderer();
+
     // MAIN LOOP ----------------------------------------------------------------
     renderer->mainloop(); // Render and simulate Town
-
 
     // CLEANUP ------------------------------------------------------------------
     delete renderer; // This will call the renderer deconstructor, to close the windows and delete game resources

@@ -17,6 +17,7 @@
 #include "Entity.h"
 
 class Road;
+
 class Building {
 public:
 	Building(std::string name, int capacity, int defensibility, int resources);
@@ -26,16 +27,26 @@ public:
 
 	Vector2 position = {0, 0};
 	Vector2 size = {1, 1};
+	
 	Color colour = WHITE;
-
+	bool selected = false;
+	
 	std::vector<Entity*> entities;
 	bool addEntity(Entity* entity);
 	bool moveEntityTo(Entity* entity, Building* building);
 
+	Rectangle boundingBox();
+
+	void highlight();
+	void dehighlight();
+
 	int getID();
 
 private:
+	Color originalColour;
+	bool highlighted;
 	int id;
+
 };
 
 #endif // __BUILDING_H_INCLUDED__

@@ -4,8 +4,8 @@ SYS := $(shell $(CC) -dumpmachine)
 CFLAGS = -std=c++11 -Wall
 LDFLAGS = -lraylib
 
-SOURCE_DIR = src/
-SOURCE = $(wildcard $(SOURCE_DIR)/*.cpp)
+SRC_DIR = src/
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
 
 TMP_DIR = tmp/
 BUILD_DIR = bin/
@@ -32,11 +32,15 @@ else ifneq (, $(findstring apple, $(SYS)))
   PLATFORM = macOS
 endif
 
-all:
-	@mkdir -p $(BUILD_DIR)
-	@rm -f $(BUILD_DIR)$(EXECUTABLE)
-	@$(CC) $(CFLAGS) -o $(BUILD_DIR)$(EXECUTABLE) $(SOURCE) $(LDFLAGS) $(WINICON)
 
+all:
+	@rm -f $(BUILD_DIR)$(EXECUTABLE)
+	@$(CC) $(CFLAGS) -o $(BUILD_DIR)$(EXECUTABLE) $(SRC) $(LDFLAGS) $(WINICON)
+
+
+run: all
+	@mkdir -p $(TMP_DIR)
+	@$(BUILD_DIR)$(EXECUTABLE) > $(TMP_DIR)output.txt
 
 define INFO
 <?xml version="1.0" encoding="UTF-8"?>
@@ -52,18 +56,15 @@ define INFO
 endef
 export INFO
 
+
 genapp: all
 ifeq ($(PLATFORM), macOS)
 	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app;
 	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents;
 	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents/MacOS;
-	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents/Resources;
+	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents/ReSRCs;
 	@touch $(BUILD_DIR)$(EXECUTABLE).app/Contents/Info.plist;
 	@echo "$$INFO" > $(BUILD_DIR)$(EXECUTABLE).app/Contents/Info.plist;
 	@cp $(BUILD_DIR)$(EXECUTABLE) $(BUILD_DIR)$(EXECUTABLE).app/Contents/MacOS/$(EXECUTABLE);
-	@cp $(ASSET_DIR)$(ICON) $(BUILD_DIR)$(EXECUTABLE).app/Contents/resources/$(ICON);
+	@cp $(ASSET_DIR)$(ICON) $(BUILD_DIR)$(EXECUTABLE).app/Contents/reSRCs/$(ICON);
 endif
-
-run: all
-	@mkdir -p $(TMP_DIR)
-	@$(BUILD_DIR)$(EXECUTABLE) > $(TMP_DIR)output.txt
