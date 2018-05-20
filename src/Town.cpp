@@ -10,10 +10,13 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
+#include <random>
 #include <algorithm>
 
 #include "Town.h"
 
+std::random_device rd; // only used once to initialise (seed) engine
+std::mt19937 rng(rd()); // random-number engine used (Mersenne-Twister in this case)
 Town::Town() {}
 
 Town* Town::singletonInstance = nullptr;
@@ -40,9 +43,66 @@ Town* Town::Instance() {
     return singletonInstance;
 }
 
+// Phases
+void Town::zombieMove(Renderer* renderer) {
+    for (Entity* entity : entities) {
+        if (entity->zombie) {
+            Building* oldBuilding = entity->building;
+            int building = oldBuilding->getID();
+
+            // Choose random building
+            std::uniform_int_distribution<int> uni(0, adjList[building].size()-1);
+            int i = uni(rng);
+            int nextBuilding = adjList[building][i];
+            if (entity->building->moveEntityTo(entity, buildings[nextBuilding])) {
+                renderer->moveEntityBetween(oldBuilding, buildings[nextBuilding], entity->zombie);
+            }
+        }
+    }
+}
+void Town::zombieInfect(Renderer* renderer) {
+}
+void Town::peopleMove(Renderer* renderer) {
+    for (Entity* entity : entities) {
+        if (!entity->zombie) {
+            Building* oldBuilding = entity->building;
+            int building = oldBuilding->getID();
+
+            // Choose random building
+            std::uniform_int_distribution<int> uni(0, adjList[building].size()-1);
+            int i = uni(rng);
+            int nextBuilding = adjList[building][i];
+            if (entity->building->moveEntityTo(entity, buildings[nextBuilding])) {
+                renderer->moveEntityBetween(oldBuilding, buildings[nextBuilding], entity->zombie);
+            }
+        }
+    }
+}
+
 // This function will be used to update building and road values, and call corresponding entity update functions
 void Town::update(Renderer* renderer, float deltaTime) {
-    // Nothing here yet...
+    // Run every timestep
+    if (frame == Renderer::timestep) {
+        frame = 0;
+        time++;
+
+        switch (phase) {
+        case PeopleMove:
+            zombieMove(renderer);
+            phase = ZombieMove;
+            break;
+        case ZombieMove:
+            zombieInfect(renderer);
+            phase = ZombieInfect;
+            break;
+        case ZombieInfect:
+            peopleMove(renderer);
+            phase = PeopleMove;
+            break;
+        }
+    }
+
+    frame++;
 }
 
 // Add a building if the town has not finished building
@@ -60,6 +120,10 @@ void Town::addRoad(Road* road) {
     } else {
         throw std::runtime_error("Could not add road when town has finished building");
     }
+}
+
+void Town::addEntity(Entity* entity) {
+    entities.push_back(entity);
 }
 
 // Return private properties
@@ -94,6 +158,9 @@ void Town::finishCreate() {
     // Set to 0
     std::fill(this->adjMat, this->adjMat+arrSize, 0);
     
+    // Create adjacency list
+    adjList = new std::vector<int>[numBuildings];
+
     // Register edge connections
     for (Road* road : this->roads) {
         // ID of building corresponds to index of adjacency matrix
@@ -103,6 +170,9 @@ void Town::finishCreate() {
         // Bi-directional matrix, transpose is identical
         this->adjMat[index(b1, b2, numBuildings)] = length;
         this->adjMat[index(b2, b1, numBuildings)] = length;
+
+        adjList[b1].push_back(b2);
+        adjList[b2].push_back(b1);
     }
 }
 

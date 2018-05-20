@@ -20,32 +20,34 @@ class Road;
 
 class Building {
 public:
-	Building(std::string name, int capacity, int defensibility, int resources);
+    Building(std::string name, int capacity, int defensibility, int resources);
 
-	std::string name;
-	int capacity, defensibility, resources;
+    std::string name;
+    int capacity, defensibility, resources;
 
-	Vector2 position = {0, 0};
-	Vector2 size = {1, 1};
-	
-	Color colour = WHITE;
-	bool selected = false;
-	
-	std::vector<Entity*> entities;
-	bool addEntity(Entity* entity);
-	bool moveEntityTo(Entity* entity, Building* building);
+    Vector2 position = {0, 0};
+    Vector2 size = {1, 1};
+    
+    Color colour = WHITE;
+    bool selected = false;
+    
+    int numPeople = 0, numZombies = 0;
 
-	Rectangle boundingBox();
+    std::vector<Entity*> entities;
+    bool addEntity(Entity* entity);
+    bool moveEntityTo(Entity* entity, Building* building);
 
-	void highlight();
-	void dehighlight();
+    Rectangle boundingBox();
 
-	int getID();
+    void highlight();
+    void dehighlight();
+
+    int getID();
 
 private:
-	Color originalColour;
-	bool highlighted;
-	int id;
+    Color originalColour;
+    bool highlighted;
+    int id;
 
 };
 

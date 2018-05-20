@@ -1,7 +1,7 @@
 CC = clang++
 SYS := $(shell $(CC) -dumpmachine)
 
-CFLAGS = -std=c++11 -Wall
+CFLAGS = -std=c++11 -Wall -g
 LDFLAGS = -lraylib
 
 SRC_DIR = src/
@@ -14,22 +14,22 @@ EXECUTABLE = GroundZero
 PLATFORM = unknown
 
 ifneq (, $(findstring linux, $(SYS)))
-  # Linux
-  LDFLAGS += -lglfw
-  PLATFORM = linux
+	# Linux
+	LDFLAGS += -lglfw
+	PLATFORM = linux
 else ifneq (, $(findstring w64, $(SYS)))
-  # Windows
-  CFLAGS += -I"C:/Program Files/raylib/include" -I"C:/Program Files/GLFW/include"
-  LDFLAGS += -L"C:/Program Files/raylib/lib" -L"C:/Program Files/GLFW/lib" -lglfw3 -lgdi32 -static -Wl,--allow-multiple-definition
-  WINICON = $(ASSET_DIR)icon.res
-  EXECUTABLE := $(EXECUTABLE).exe
-  PLATFORM = windows
+	# Windows
+	CFLAGS += -I"C:/Program Files/raylib/include" -I"C:/Program Files/GLFW/include"
+	LDFLAGS += -L"C:/Program Files/raylib/lib" -L"C:/Program Files/GLFW/lib" -lglfw3 -lgdi32 -static -Wl,--allow-multiple-definition
+	WINICON = $(ASSET_DIR)icon.res
+	EXECUTABLE := $(EXECUTABLE).exe
+	PLATFORM = windows
 else ifneq (, $(findstring apple, $(SYS)))
-  # macOS
-  CFLAGS += -mmacosx-version-min=10.10
-  LDFLAGS += -lglfw3 -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL
-  ICON = icon.icns
-  PLATFORM = macOS
+	# macOS
+	CFLAGS += -mmacosx-version-min=10.10
+	LDFLAGS += -lglfw3 -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL
+	ICON = icon.icns
+	PLATFORM = macOS
 endif
 
 
@@ -37,6 +37,9 @@ all:
 	@rm -f $(BUILD_DIR)$(EXECUTABLE)
 	@$(CC) $(CFLAGS) -o $(BUILD_DIR)$(EXECUTABLE) $(SRC) $(LDFLAGS) $(WINICON)
 
+
+debug: all
+	lldb $(BUILD_DIR)$(EXECUTABLE)
 
 run: all
 	@mkdir -p $(TMP_DIR)
@@ -47,10 +50,10 @@ define INFO
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleExecutable</key>
-  <string>$(EXECUTABLE)</string>
-  <key>CFBundleIconFile</key>
-  <string>$(ICON)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE)</string>
+	<key>CFBundleIconFile</key>
+	<string>$(ICON)</string>
 </dict>
 </plist>
 endef

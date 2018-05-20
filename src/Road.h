@@ -17,16 +17,16 @@ class Building;
 
 class Road {
 public:
-	Road(int width, Building* b1, Building* b2);
+    Road(int width, Building* b1, Building* b2);
 
-	int width;
+    int width;
 
-	Building* building1;
-	Building* building2;
+    Building* building1;
+    Building* building2;
 
-	std::pair<Building*, Building*> getConnectedBuildings();
+    std::pair<Building*, Building*> getConnectedBuildings();
 
-	int length();
+    int length();
    
 private:
 };

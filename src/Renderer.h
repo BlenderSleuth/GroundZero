@@ -26,6 +26,9 @@ public:
 
     bool showFPS = true;
 
+    // Frames per timestep
+    static const int timestep = 20;
+
     Color backgroundColour = BLACK;
 
     Camera2D camera;
@@ -33,12 +36,22 @@ public:
     bool mouseDown = false;
     Vector2 lastMousePos = {0, 0};
 
+    void moveEntityBetween(Building* b1, Building* b2, bool zombie);
+
 
 private:
     void render(float deltaTime);
 
     void drawRoad(Road* road);
     void drawBuilding(Building* building);
+
+    struct Move {
+        Vector2 start, end, pos;
+        int frame;
+        bool zombie;
+    };
+
+    std::vector<Move> moves;
 };
 
 #endif // __RENDERER_H_INCLUDED__

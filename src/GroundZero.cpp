@@ -189,6 +189,12 @@ void createTown(Town* town) {
     // Set town centre (for position)
     town->townCentre = {500, 500};
 
+    // Create zombie
+    Entity* resident = new Entity("zombie");
+    resident->zombie= true;
+    townCentre->addEntity(resident);
+    Town::Instance()->addEntity(resident);
+
     // Signal that we have finished building the town.
     town->finishCreate();
 
@@ -210,7 +216,7 @@ int main() {
 
     // CLEANUP ------------------------------------------------------------------
     delete renderer; // This will call the renderer deconstructor, to close the windows and delete game resources
-    delete town; // This will call the town deconstrucor, which deletes the buildings, roads, and entities.
+    delete town; // This will call the town deconstructor, which deletes the buildings, roads, and entities.
 
     return 0;
 }

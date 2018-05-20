@@ -10,5 +10,5 @@
 #include "Weapon.h"
 
 Weapon::Weapon(WeaponType type) {
-	this->type = type;
+    this->type = type;
 }

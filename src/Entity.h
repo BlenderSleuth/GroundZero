@@ -25,7 +25,7 @@ public:
     // Entity starts off as not a zombie
     bool zombie = false;
 
-  	// Has not been added to building yet
+    // Has not been added to building yet
     Building* building;
 
     // Default starting stats
