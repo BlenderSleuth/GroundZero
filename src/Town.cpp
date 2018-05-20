@@ -50,30 +50,57 @@ void Town::zombieMove(Renderer* renderer) {
             Building* oldBuilding = entity->building;
             int building = oldBuilding->getID();
 
-            // Choose random building
-            std::uniform_int_distribution<int> uni(0, adjList[building].size()-1);
-            int i = uni(rng);
-            int nextBuilding = adjList[building][i];
-            if (entity->building->moveEntityTo(entity, buildings[nextBuilding])) {
-                renderer->moveEntityBetween(oldBuilding, buildings[nextBuilding], entity->zombie);
+            // Choose building with the highest zombie ratio
+            int bestRatio = oldBuilding->zombieRatio();
+            Building* nextBuilding = oldBuilding;
+            for (int newBuilding : adjList[building]) {
+                if (buildings[newBuilding]->zombieRatio() > bestRatio) {
+                    bestRatio = buildings[newBuilding]->zombieRatio();
+                    nextBuilding = buildings[newBuilding];
+                }
+            }
+
+            if (entity->building->moveEntityTo(entity, nextBuilding)) {
+                renderer->moveEntityBetween(oldBuilding, nextBuilding, entity->zombie);
             }
         }
     }
 }
 void Town::zombieInfect(Renderer* renderer) {
+    // Each zombie infects 1 person in their building
+    for (Entity* entity : entities) {
+        if (entity->zombie) {
+            Building* building = entity->building;
+            for (Entity* person : building->entities) {
+                if (!person->zombie) {
+                    person->zombie = true;
+                    building->numZombies++;
+                    building->numPeople--;
+                    break;
+                }
+            }
+        }
+    }
 }
 void Town::peopleMove(Renderer* renderer) {
     for (Entity* entity : entities) {
         if (!entity->zombie) {
             Building* oldBuilding = entity->building;
+
             int building = oldBuilding->getID();
 
-            // Choose random building
-            std::uniform_int_distribution<int> uni(0, adjList[building].size()-1);
-            int i = uni(rng);
-            int nextBuilding = adjList[building][i];
-            if (entity->building->moveEntityTo(entity, buildings[nextBuilding])) {
-                renderer->moveEntityBetween(oldBuilding, buildings[nextBuilding], entity->zombie);
+            // Choose building with fewest zombies
+            int bestZombies = oldBuilding->numZombies;
+            Building* nextBuilding = oldBuilding;
+            for (int newBuilding : adjList[building]) {
+                if (buildings[newBuilding]->numZombies <= bestZombies) {
+                    bestZombies = buildings[newBuilding]->numZombies;
+                    nextBuilding = buildings[newBuilding];
+                }
+            }
+
+            if (entity->building->moveEntityTo(entity, nextBuilding)) {
+                renderer->moveEntityBetween(oldBuilding, nextBuilding, entity->zombie);
             }
         }
     }
@@ -127,13 +154,13 @@ void Town::addEntity(Entity* entity) {
 }
 
 // Return private properties
-std::vector<Building*> Town::getBuildings() {
+const std::vector<Building*>& Town::getBuildings() {
     return this->buildings;
 }
-std::vector<Road*> Town::getRoads() {
+const std::vector<Road*>& Town::getRoads() {
     return this->roads;
 }
-std::vector<Entity*> Town::getEntities() {
+const std::vector<Entity*>& Town::getEntities() {
     return this->entities;
 }
 

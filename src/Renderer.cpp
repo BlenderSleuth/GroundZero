@@ -2,7 +2,7 @@
 *
 *   Ground Zero Renderer | Display town data model
 *
-*   This program has been created using raylib 1.0 (www.raylib.com)
+*   This program has been created using raylib 1.8 (www.raylib.com)
 *   raylib is licensed under an unmodified zlib/libpng license (View raylib.h for details)
 *
 ********************************************************************************************/
@@ -123,8 +123,8 @@ void Renderer::render(float deltaTime) {
     // Display HUD
     int fontSize = 36;
     // Time
-    const char* time = ("TIME: " + std::to_string(Town::Instance()->time)).c_str();
-    DrawText(time, width - 160, 15, fontSize, GREEN);
+    const char* time = ("TIME " + std::to_string(Town::Instance()->time)).c_str();
+    DrawText(time, width - 170, 15, fontSize, GREEN);
 
     // Phase
     const char* phase;
@@ -139,7 +139,8 @@ void Renderer::render(float deltaTime) {
         phase = " People Move";
         break;
     }
-    DrawText(phase, width - 250, 45, fontSize, GREEN);
+    int phaseWidth = MeasureText(phase, fontSize);
+    DrawText(phase, width - phaseWidth - 25, 45, fontSize, GREEN);
 
     // If show FPS is on, draw the FPS
     if (showFPS) {

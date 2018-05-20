@@ -32,6 +32,7 @@ public:
     bool selected = false;
     
     int numPeople = 0, numZombies = 0;
+    double zombieRatio();
 
     std::vector<Entity*> entities;
     bool addEntity(Entity* entity);

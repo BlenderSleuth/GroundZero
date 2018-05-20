@@ -7,6 +7,7 @@
 *
 ********************************************************************************************/
 
+#include <algorithm>
 #include <string>
 
 #include "Town.h"
@@ -23,10 +24,14 @@ Building::Building(std::string name, int capacity, int defensibility, int resour
     this->defensibility = defensibility;
     this->resources = resources;
     this->id = currentID++;
+}
 
-    Entity* resident = new Entity(std::to_string(id));
-    addEntity(resident);
-    Town::Instance()->addEntity(resident);
+double Building::zombieRatio() {
+    if (numZombies == 0) {
+        return std::max((double)numPeople, 0.5);
+    } else {
+        return ((double)numPeople) / ((double)numZombies);
+    }
 }
 
 // Will return true if capacity limit is not reached
@@ -37,7 +42,7 @@ bool Building::addEntity(Entity* entity) {
         entities.push_back(entity);
         if (entity->zombie) { numZombies++; } else { numPeople++; }
         entity->building = this;
-        
+
         return true;
     } else {
         return false;

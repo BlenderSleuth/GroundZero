@@ -10,7 +10,6 @@
 #ifndef __ENTITY_H_INCLUDED__
 #define __ENTITY_H_INCLUDED__
 
-#include <string>
 #include <vector>
 
 #include "Weapon.h"
@@ -19,9 +18,7 @@ class Building;
 
 class Entity {
 public:
-    Entity(std::string name);
-
-    std::string name;
+    Entity();
     // Entity starts off as not a zombie
     bool zombie = false;
 
@@ -37,11 +34,6 @@ public:
     int hunger = 0;
     // No default weapons
     std::vector<Weapon*> weapons;
-
-    /*
-     * This pathfinding algorithm will use a priority queue for Dijkstra's
-     */
-    void findNextPath();
     
 
 private:

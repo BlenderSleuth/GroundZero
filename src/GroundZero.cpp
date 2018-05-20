@@ -7,8 +7,10 @@
 *
 ********************************************************************************************/
 
+#include <iostream>
 #include <utility>
 #include <tuple>
+#include <random>
 #include <raylib.h>
 
 #include "Renderer.h"
@@ -105,7 +107,7 @@ void createTown(Town* town) {
     Building* bigal = new Building("Big Al's",     30,         60,           15);
     bigal->position = {680, 630};
     bigal->size = {140, 150};
-    bigal->colour = MAGENTA;
+    bigal->colour = YELLOW;
     town->addBuilding(bigal);
 
     // Road has parameters:  width    from    to
@@ -189,11 +191,28 @@ void createTown(Town* town) {
     // Set town centre (for position)
     town->townCentre = {500, 500};
 
+    int NUM_PEOPLE = 50;
+
+    // Random number generator
+    std::random_device rd;
+    std::mt19937 rng(rd()); 
+    std::uniform_int_distribution<int> uni(0, town->getBuildings().size()-1);
+
+    for (int i = 0; i < NUM_PEOPLE; i++) {
+        Entity* resident = new Entity();
+        int building = uni(rng);
+        town->getBuildings()[building]->addEntity(resident);
+        town->addEntity(resident);
+        if (!resident->building) {
+            std::cerr << building << std::endl;
+        }
+    }
+
     // Create zombie
-    Entity* resident = new Entity("zombie");
-    resident->zombie= true;
-    townCentre->addEntity(resident);
-    Town::Instance()->addEntity(resident);
+    Entity* zombie = new Entity();
+    zombie->zombie = true;
+    townCentre->addEntity(zombie);
+    town->addEntity(zombie);
 
     // Signal that we have finished building the town.
     town->finishCreate();

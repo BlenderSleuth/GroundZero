@@ -42,9 +42,9 @@ public:
     void addEntity(Entity* entity);
 
     // Data encapsulation - can only read buildings, roads and entities for rendering
-    std::vector<Building*> getBuildings();
-    std::vector<Road*> getRoads();
-    std::vector<Entity*> getEntities();
+    const std::vector<Building*>& getBuildings();
+    const std::vector<Road*>& getRoads();
+    const std::vector<Entity*>& getEntities();
 
     std::vector<int>* adjList;
 

@@ -7,16 +7,7 @@
 *
 ********************************************************************************************/
 
-#include <string>
-
-#include "Building.h"
 #include "Entity.h"
 
-Entity::Entity(std::string name) {
-    this->name = name;
-}
-
-void Entity::findNextPath() {
-    // Nothing here yet...
-}
+Entity::Entity() {}
 

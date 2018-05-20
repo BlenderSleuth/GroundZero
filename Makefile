@@ -39,7 +39,7 @@ all:
 
 
 debug: all
-	lldb $(BUILD_DIR)$(EXECUTABLE)
+	PATH=/usr/bin /usr/bin/lldb $(BUILD_DIR)$(EXECUTABLE)
 
 run: all
 	@mkdir -p $(TMP_DIR)

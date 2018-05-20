@@ -27,7 +27,7 @@ public:
     bool showFPS = true;
 
     // Frames per timestep
-    static const int timestep = 20;
+    static const int timestep = 60;
 
     Color backgroundColour = BLACK;
 
