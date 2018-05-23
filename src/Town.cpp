@@ -15,8 +15,6 @@
 
 #include "Town.h"
 
-std::random_device rd; // only used once to initialise (seed) engine
-std::mt19937 rng(rd()); // random-number engine used (Mersenne-Twister in this case)
 Town::Town() {}
 
 Town* Town::singletonInstance = nullptr;
@@ -68,18 +66,22 @@ void Town::zombieMove(Renderer* renderer) {
 }
 void Town::zombieInfect(Renderer* renderer) {
     // Each zombie infects 1 person in their building
+    std::vector<Entity*> toInfect;
     for (Entity* entity : entities) {
         if (entity->zombie) {
             Building* building = entity->building;
             for (Entity* person : building->entities) {
                 if (!person->zombie) {
-                    person->zombie = true;
+                    toInfect.push_back(person);
                     building->numZombies++;
                     building->numPeople--;
                     break;
                 }
             }
         }
+    }
+    for (Entity* infected : toInfect) {
+        infected->zombie = true;
     }
 }
 void Town::peopleMove(Renderer* renderer) {
@@ -194,6 +196,7 @@ void Town::finishCreate() {
         int b1 = road->building1->getID();
         int b2 = road->building2->getID();
         int length = road->length();
+        
         // Bi-directional matrix, transpose is identical
         this->adjMat[index(b1, b2, numBuildings)] = length;
         this->adjMat[index(b2, b1, numBuildings)] = length;

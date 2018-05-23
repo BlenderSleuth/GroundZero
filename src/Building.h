@@ -35,6 +35,7 @@ public:
     double zombieRatio();
 
     std::vector<Entity*> entities;
+    
     bool addEntity(Entity* entity);
     bool moveEntityTo(Entity* entity, Building* building);
 

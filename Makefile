@@ -13,6 +13,8 @@ ASSET_DIR = assets/
 EXECUTABLE = GroundZero
 PLATFORM = unknown
 
+DEBUGGER = lldb
+
 ifneq (, $(findstring linux, $(SYS)))
 	# Linux
 	LDFLAGS += -lglfw
@@ -30,6 +32,7 @@ else ifneq (, $(findstring apple, $(SYS)))
 	LDFLAGS += -lglfw3 -framework CoreVideo -framework IOKit -framework Cocoa -framework OpenGL
 	ICON = icon.icns
 	PLATFORM = macOS
+	DEBUGGER = PATH=/usr/bin /usr/bin/lldb
 endif
 
 
@@ -39,7 +42,7 @@ all:
 
 
 debug: all
-	PATH=/usr/bin /usr/bin/lldb $(BUILD_DIR)$(EXECUTABLE)
+	 @$(DEBUGGER) $(BUILD_DIR)$(EXECUTABLE)
 
 run: all
 	@mkdir -p $(TMP_DIR)

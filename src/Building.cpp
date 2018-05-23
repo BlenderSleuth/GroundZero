@@ -36,8 +36,8 @@ double Building::zombieRatio() {
 
 // Will return true if capacity limit is not reached
 bool Building::addEntity(Entity* entity) {
-    // Check capcaity
-    if (entities.size() < capacity) {
+    // Check capacity
+    if (numPeople < capacity || entity->zombie) {
         // Add entity to building
         entities.push_back(entity);
         if (entity->zombie) { numZombies++; } else { numPeople++; }

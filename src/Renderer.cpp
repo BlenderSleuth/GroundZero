@@ -83,9 +83,13 @@ void Renderer::drawBuilding(Building* building) {
 
     const char* numPeople = std::to_string(building->numPeople).c_str();
     const char* numZombies = std::to_string(building->numZombies).c_str();
-    fontSize = 36;
-    DrawText(numPeople, building->position.x-20, building->position.y, fontSize, BLACK);
-    DrawText(numZombies, building->position.x+10, building->position.y, fontSize, RED);
+    const char* ratio = std::to_string((int)building->zombieRatio()).c_str();
+    const char* capacity = (std::to_string(building->numPeople) + "/" + std::to_string(building->capacity)).c_str();
+    fontSize = 28;
+    DrawText(numPeople, building->position.x-20, building->position.y-10, fontSize, BLACK);
+    DrawText(numZombies, building->position.x+10, building->position.y-10, fontSize, RED);
+    DrawText(ratio, building->position.x, building->position.y-40, fontSize, BLACK);
+    DrawText(capacity, building->position.x-30, building->position.y+20, fontSize, BLACK);
 }
 
 // RENDER TOWN, run every frame
@@ -222,10 +226,12 @@ void Renderer::mainloop() {
 }
 
 void Renderer::moveEntityBetween(Building* b1, Building* b2, bool zombie) {
-    Move m;
-    m.pos = m.start = b1->position;
-    m.end = b2->position;
-    m.frame = 0;
-    m.zombie = zombie;
-    moves.push_back(m);
+    if (b1 != b2) {
+        Move m;
+        m.pos = m.start = b1->position;
+        m.end = b2->position;
+        m.frame = 0;
+        m.zombie = zombie;
+        moves.push_back(m);
+    }
 }

@@ -191,7 +191,7 @@ void createTown(Town* town) {
     // Set town centre (for position)
     town->townCentre = {500, 500};
 
-    int NUM_PEOPLE = 50;
+    int NUM_PEOPLE = 100;
 
     // Random number generator
     std::random_device rd;
@@ -201,10 +201,8 @@ void createTown(Town* town) {
     for (int i = 0; i < NUM_PEOPLE; i++) {
         Entity* resident = new Entity();
         int building = uni(rng);
-        town->getBuildings()[building]->addEntity(resident);
-        town->addEntity(resident);
-        if (!resident->building) {
-            std::cerr << building << std::endl;
+        if (town->getBuildings()[building]->addEntity(resident)) {
+            town->addEntity(resident);
         }
     }
 
