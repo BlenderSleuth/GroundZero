@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <string>
+#include <iostream>
 
 #include "Town.h"
 #include "Road.h"
@@ -27,53 +28,78 @@ Building::Building(std::string name, int capacity, int defensibility, int resour
 }
 
 double Building::zombieRatio() {
-    if (numZombies == 0) {
-        return std::max((double)numPeople, 0.5);
+    if (zombies.size() == 0) {
+        return std::max((double)people.size(), 0.5);
     } else {
-        return ((double)numPeople) / ((double)numZombies);
+        return ((double)people.size()) / ((double)zombies.size());
     }
 }
 
 // Will return true if capacity limit is not reached
 bool Building::addEntity(Entity* entity) {
-    // Check capacity
-    if (numPeople < capacity || entity->zombie) {
-        // Add entity to building
-        entities.push_back(entity);
-        if (entity->zombie) { numZombies++; } else { numPeople++; }
+    if (entity->zombie) {
+        // Add zombie to building
+        zombies.insert(entity);
+        entity->building = this;
+        return true;
+
+        // Check capacity
+    } else if (people.size() < capacity) {
+        // Add person to building
+        people.insert(entity);
         entity->building = this;
 
         return true;
-    } else {
-        return false;
-    }
+    } 
+
+    return false;
 }
 
 // Will return true if entity has successfully moved
 bool Building::moveEntityTo(Entity* entity, Building* building) {
     // Find entity in this building entity list:
-    int index = -1;
-    for (int i = 0; i < entities.size(); i++) {
-        if (entities[i] == entity) {
-            index = i;
-            break;
+    if (entity->zombie) {
+        auto index = zombies.find(entity);
+
+        // If this zombie is not in this building
+        if (index == zombies.end()) {
+            return false;
+        }
+
+        // If successfully added
+        if (building->addEntity(entity)) {
+            // Remove from this building
+            zombies.erase(index);
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        auto index = people.find(entity);
+
+        // If this person is not in this building
+        if (index == people.end()) {
+            return false;
+        }
+        // If successfully added
+        if (building->addEntity(entity)) {
+            // Remove from this building
+            people.erase(index);
+            return true;
+        } else {
+            return false;
         }
     }
-    // If this entity is not in this building
-    if (index == -1) {
-        return false;
-    }
+}
 
-    // If successfully added
-    if (building->addEntity(entity)) {
-        // Remove from this building
-        entities.erase(entities.begin()+index);
-        if (entity->zombie) { numZombies--; } else { numPeople--; }
-        
-        return true;
-    } else {
-        return false;
+void Building::makeZombie(Entity* entity) {
+    auto index = people.find(entity);
+    if (index == people.end()) {
+        return;
     }
+    people.erase(entity);
+    entity->zombie = true;
+    zombies.insert(entity);
 }
 
 Rectangle Building::boundingBox() {
@@ -93,6 +119,22 @@ void Building::dehighlight() {
         colour = originalColour;
     }
 }
+
+// Return private properties
+const std::set<Entity*>& Building::getPeople() {
+    return this->people;
+}
+const std::set<Entity*>& Building::getZombies() {
+    return this->zombies;
+}
+
+int Building::numPeople() {
+    return this->people.size();
+}
+int Building::numZombies() {
+    return this->zombies.size();
+}
+
 
 // ID should not be changed
 int Building::getID() {

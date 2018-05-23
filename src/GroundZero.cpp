@@ -198,6 +198,7 @@ void createTown(Town* town) {
     std::mt19937 rng(rd()); 
     std::uniform_int_distribution<int> uni(0, town->getBuildings().size()-1);
 
+    // Randomly place people inside the town
     for (int i = 0; i < NUM_PEOPLE; i++) {
         Entity* resident = new Entity();
         int building = uni(rng);
@@ -206,7 +207,7 @@ void createTown(Town* town) {
         }
     }
 
-    // Create zombie
+    // Create zombie at town centre
     Entity* zombie = new Entity();
     zombie->zombie = true;
     townCentre->addEntity(zombie);
@@ -214,11 +215,7 @@ void createTown(Town* town) {
 
     // Signal that we have finished building the town.
     town->finishCreate();
-
-    // town->printAdjacencyMatrix();
 }
-
-
 
 int main() {
     // SETUP TOWN ---------------------------------------------------------------

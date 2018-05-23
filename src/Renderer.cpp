@@ -8,7 +8,6 @@
 ********************************************************************************************/
 
 #include <string>
-#include <iostream>
 #include <GLFW/glfw3.h>
 #include <raylib.h>
 
@@ -81,15 +80,15 @@ void Renderer::drawBuilding(Building* building) {
     // DrawText(std::to_string(building->resources).c_str(), 
     //     position.x+10, position.y+55, fontSize, fontColour);
 
-    const char* numPeople = std::to_string(building->numPeople).c_str();
-    const char* numZombies = std::to_string(building->numZombies).c_str();
-    const char* ratio = std::to_string((int)building->zombieRatio()).c_str();
-    const char* capacity = (std::to_string(building->numPeople) + "/" + std::to_string(building->capacity)).c_str();
-    fontSize = 28;
-    DrawText(numPeople, building->position.x-20, building->position.y-10, fontSize, BLACK);
-    DrawText(numZombies, building->position.x+10, building->position.y-10, fontSize, RED);
-    DrawText(ratio, building->position.x, building->position.y-40, fontSize, BLACK);
-    DrawText(capacity, building->position.x-30, building->position.y+20, fontSize, BLACK);
+    // const char* numPeople = std::to_string(building->numPeople()).c_str();
+    const char* numZombies = std::to_string(building->numZombies()).c_str();
+    // const char* ratio = std::to_string((int)building->zombieRatio()).c_str();
+    const char* capacity = (std::to_string(building->numPeople()) + "/" + std::to_string(building->capacity)).c_str();
+    fontSize = 22;
+    // DrawText(numPeople, building->position.x-20, building->position.y-10, fontSize, BLACK);
+    DrawText(numZombies, building->position.x, building->position.y-10, fontSize, RED);
+    // DrawText(ratio, building->position.x, building->position.y-40, fontSize, BLACK);
+    DrawText(capacity, building->position.x-15, building->position.y+10, fontSize, BLACK);
 }
 
 // RENDER TOWN, run every frame
@@ -109,7 +108,7 @@ void Renderer::render(float deltaTime) {
         // Draw people moving
         for (Move& m : moves) {
             if (m.zombie) {
-               DrawCircleV(m.pos, 10, RED); 
+                DrawCircleV(m.pos, 10, RED); 
             } else {
                 DrawCircleV(m.pos, 10, GREEN);
             }

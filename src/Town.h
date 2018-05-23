@@ -11,6 +11,7 @@
 #define __TOWN_H_INCLUDED__
 
 #include <vector>
+#include <set>
 
 #include "Renderer.h"
 #include "Building.h"
@@ -41,10 +42,11 @@ public:
     void addRoad(Road* road);
     void addEntity(Entity* entity);
 
-    // Data encapsulation - can only read buildings, roads and entities for rendering
+    // Data encapsulation - can only read buildings, roads and entities
     const std::vector<Building*>& getBuildings();
     const std::vector<Road*>& getRoads();
-    const std::vector<Entity*>& getEntities();
+    const std::set<Entity*>& getPeople();
+    const std::set<Entity*>& getZombies();
 
     std::vector<int>* adjList;
 
@@ -66,7 +68,8 @@ private:
     // Private array to store buildings and roads
     std::vector<Building*> buildings;
     std::vector<Road*> roads;
-    std::vector<Entity*> entities;
+    std::set<Entity*> people;
+    std::set<Entity*> zombies;
 
     void zombieMove(Renderer* renderer);
     void zombieInfect(Renderer* renderer);

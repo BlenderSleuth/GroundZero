@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include <raylib.h>
 
 #include "Entity.h"
@@ -31,13 +32,16 @@ public:
     Color colour = WHITE;
     bool selected = false;
     
-    int numPeople = 0, numZombies = 0;
-    double zombieRatio();
+    const std::set<Entity*>& getPeople();
+    const std::set<Entity*>& getZombies();
+    int numZombies();
+    int numPeople();
 
-    std::vector<Entity*> entities;
+    double zombieRatio();
     
     bool addEntity(Entity* entity);
     bool moveEntityTo(Entity* entity, Building* building);
+    void makeZombie(Entity* entity);
 
     Rectangle boundingBox();
 
@@ -51,6 +55,8 @@ private:
     bool highlighted;
     int id;
 
+    std::set<Entity*> people;
+    std::set<Entity*> zombies;
 };
 
 #endif // __BUILDING_H_INCLUDED__
