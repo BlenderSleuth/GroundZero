@@ -1,7 +1,7 @@
 CC = clang++
 SYS := $(shell $(CC) -dumpmachine)
 
-CFLAGS = -std=c++11 -Wall -g
+CFLAGS = -std=c++11 -Wall
 LDFLAGS = -lraylib
 
 SRC_DIR = src/
@@ -65,12 +65,13 @@ export INFO
 
 genapp: all
 ifeq ($(PLATFORM), macOS)
+	@rm -rf $(BUILD_DIR)$(EXECUTABLE).app;
 	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app;
 	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents;
 	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents/MacOS;
-	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents/ReSRCs;
+	@mkdir -p $(BUILD_DIR)$(EXECUTABLE).app/Contents/resources;
 	@touch $(BUILD_DIR)$(EXECUTABLE).app/Contents/Info.plist;
 	@echo "$$INFO" > $(BUILD_DIR)$(EXECUTABLE).app/Contents/Info.plist;
 	@cp $(BUILD_DIR)$(EXECUTABLE) $(BUILD_DIR)$(EXECUTABLE).app/Contents/MacOS/$(EXECUTABLE);
-	@cp $(ASSET_DIR)$(ICON) $(BUILD_DIR)$(EXECUTABLE).app/Contents/reSRCs/$(ICON);
+	@cp $(ASSET_DIR)$(ICON) $(BUILD_DIR)$(EXECUTABLE).app/Contents/resources/$(ICON);
 endif

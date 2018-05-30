@@ -26,8 +26,8 @@ std::pair<Building*, Building*> Road::getConnectedBuildings() {
 
 int Road::length() {
     // Rough integer length of road using standard Pythag
-    float x = std::abs(this->building1->position.x - this->building2->position.x);
-    float y = std::abs(this->building1->position.y - this->building2->position.y);
+    float x = this->building1->position.x - this->building2->position.x;
+    float y = this->building1->position.y - this->building2->position.y;
     return floor(sqrt(pow(x, 2) + pow(y, 2)));
 }
 

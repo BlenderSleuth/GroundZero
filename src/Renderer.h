@@ -26,8 +26,10 @@ public:
 
     bool showFPS = true;
 
+    bool pause = false;
+
     // Frames per timestep
-    static const int timestep = 60;
+    static const int timestep = 120;
 
     Color backgroundColour = BLACK;
 
@@ -37,7 +39,7 @@ public:
     Vector2 lastMousePos = {0, 0};
 
     void moveEntityBetween(Building* b1, Building* b2, bool zombie);
-
+    void moveEntitiesBetween(Building* b1, Building* b2, int num, bool zombie);
 
 private:
     void render(float deltaTime);
@@ -47,6 +49,7 @@ private:
 
     struct Move {
         Vector2 start, end, pos;
+        Building* update;
         int frame;
         bool zombie;
     };

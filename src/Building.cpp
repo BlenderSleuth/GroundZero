@@ -40,6 +40,7 @@ bool Building::addEntity(Entity* entity) {
     if (entity->zombie) {
         // Add zombie to building
         zombies.insert(entity);
+        visNumZombies++;
         entity->building = this;
         return true;
 
@@ -47,6 +48,7 @@ bool Building::addEntity(Entity* entity) {
     } else if (people.size() < capacity) {
         // Add person to building
         people.insert(entity);
+        visNumPeople++;
         entity->building = this;
 
         return true;
@@ -57,6 +59,10 @@ bool Building::addEntity(Entity* entity) {
 
 // Will return true if entity has successfully moved
 bool Building::moveEntityTo(Entity* entity, Building* building) {
+    if (building == this) {
+        return false;
+    }
+
     // Find entity in this building entity list:
     if (entity->zombie) {
         auto index = zombies.find(entity);
@@ -70,6 +76,7 @@ bool Building::moveEntityTo(Entity* entity, Building* building) {
         if (building->addEntity(entity)) {
             // Remove from this building
             zombies.erase(index);
+            visNumZombies--;
             return true;
         } else {
             return false;
@@ -85,6 +92,7 @@ bool Building::moveEntityTo(Entity* entity, Building* building) {
         if (building->addEntity(entity)) {
             // Remove from this building
             people.erase(index);
+            visNumPeople--;
             return true;
         } else {
             return false;
@@ -93,13 +101,15 @@ bool Building::moveEntityTo(Entity* entity, Building* building) {
 }
 
 void Building::makeZombie(Entity* entity) {
-    auto index = people.find(entity);
-    if (index == people.end()) {
+    // If this entity does not exist
+    if (people.find(entity) == people.end()) {
         return;
     }
     people.erase(entity);
+    visNumPeople--;
     entity->zombie = true;
     zombies.insert(entity);
+    visNumZombies++;
 }
 
 Rectangle Building::boundingBox() {
@@ -121,20 +131,19 @@ void Building::dehighlight() {
 }
 
 // Return private properties
-const std::set<Entity*>& Building::getPeople() {
+const std::unordered_set<Entity*>& Building::getPeople() {
     return this->people;
 }
-const std::set<Entity*>& Building::getZombies() {
+const std::unordered_set<Entity*>& Building::getZombies() {
     return this->zombies;
 }
 
 int Building::numPeople() {
-    return this->people.size();
+    return this->visNumPeople;
 }
 int Building::numZombies() {
-    return this->zombies.size();
+    return this->visNumZombies;
 }
-
 
 // ID should not be changed
 int Building::getID() {

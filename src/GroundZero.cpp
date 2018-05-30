@@ -204,6 +204,8 @@ void createTown(Town* town) {
         int building = uni(rng);
         if (town->getBuildings()[building]->addEntity(resident)) {
             town->addEntity(resident);
+        } else {
+            delete resident;
         }
     }
 

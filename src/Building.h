@@ -12,7 +12,7 @@
 
 #include <string>
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <raylib.h>
 
 #include "Entity.h"
@@ -32,8 +32,11 @@ public:
     Color colour = WHITE;
     bool selected = false;
     
-    const std::set<Entity*>& getPeople();
-    const std::set<Entity*>& getZombies();
+    const std::unordered_set<Entity*>& getPeople();
+    const std::unordered_set<Entity*>& getZombies();
+    
+    int visNumPeople = 0;
+    int visNumZombies = 0;
     int numZombies();
     int numPeople();
 
@@ -55,8 +58,8 @@ private:
     bool highlighted;
     int id;
 
-    std::set<Entity*> people;
-    std::set<Entity*> zombies;
+    std::unordered_set<Entity*> people;
+    std::unordered_set<Entity*> zombies;
 };
 
 #endif // __BUILDING_H_INCLUDED__

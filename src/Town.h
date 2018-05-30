@@ -11,7 +11,7 @@
 #define __TOWN_H_INCLUDED__
 
 #include <vector>
-#include <set>
+#include <unordered_set>
 
 #include "Renderer.h"
 #include "Building.h"
@@ -45,8 +45,9 @@ public:
     // Data encapsulation - can only read buildings, roads and entities
     const std::vector<Building*>& getBuildings();
     const std::vector<Road*>& getRoads();
-    const std::set<Entity*>& getPeople();
-    const std::set<Entity*>& getZombies();
+    const std::unordered_set<Entity*>& getPeople();
+    const std::unordered_set<Entity*>& getZombies();
+    int totalNumPeople;
 
     std::vector<int>* adjList;
 
@@ -68,14 +69,14 @@ private:
     // Private array to store buildings and roads
     std::vector<Building*> buildings;
     std::vector<Road*> roads;
-    std::set<Entity*> people;
-    std::set<Entity*> zombies;
+    // An ordered set is used so that seaching, erasing and inserting are O(log n)
+    std::unordered_set<Entity*> people;
+    std::unordered_set<Entity*> zombies;
 
     void zombieMove(Renderer* renderer);
     void zombieInfect(Renderer* renderer);
     void peopleMove(Renderer* renderer);
     
-
     bool finished = false;
 
     // Unitialisised pointer to adjacency matrix

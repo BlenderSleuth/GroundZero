@@ -10,9 +10,9 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
-#include <random>
 #include <algorithm>
-#include <set>
+#include <vector>
+#include <map>
 
 #include "Town.h"
 
@@ -35,8 +35,8 @@ Town::~Town() {
         delete person;
     }
 
-
     delete[] this->adjMat;
+    delete[] this->adjList;
     
     // Reset singleton
     singletonInstance = nullptr;
@@ -91,6 +91,7 @@ void Town::zombieInfect(Renderer* renderer) {
         infected->building->makeZombie(infected);
     }
 }
+
 void Town::peopleMove(Renderer* renderer) {
     for (Entity* person : people) {
         Building* oldBuilding = person->building;
@@ -100,8 +101,9 @@ void Town::peopleMove(Renderer* renderer) {
         // Choose building with fewest zombies
         int bestZombies = oldBuilding->numZombies();
         Building* nextBuilding = oldBuilding;
+
         for (int newBuilding : adjList[building]) {
-            if (buildings[newBuilding]->numZombies() <= bestZombies) {
+            if (buildings[newBuilding]->numZombies() < bestZombies) {
                 bestZombies = buildings[newBuilding]->numZombies();
                 nextBuilding = buildings[newBuilding];
             }
@@ -171,10 +173,10 @@ const std::vector<Building*>& Town::getBuildings() {
 const std::vector<Road*>& Town::getRoads() {
     return this->roads;
 }
-const std::set<Entity*>& Town::getPeople() {
+const std::unordered_set<Entity*>& Town::getPeople() {
     return this->people;
 }
-const std::set<Entity*>& Town::getZombies() {
+const std::unordered_set<Entity*>& Town::getZombies() {
     return this->zombies;
 }
 
@@ -189,6 +191,8 @@ void Town::finishCreate() {
     // Flag town as finished building
     this->finished = true;
 
+    this->totalNumPeople = people.size();
+
     // Find the number of building we have
     int numBuildings = this->buildings.size();
     int arrSize = numBuildings * numBuildings;
@@ -200,7 +204,7 @@ void Town::finishCreate() {
     std::fill(this->adjMat, this->adjMat+arrSize, 0);
     
     // Create adjacency list
-    adjList = new std::vector<int>[numBuildings];
+    this->adjList = new std::vector<int>[numBuildings];
 
     // Register edge connections
     for (Road* road : this->roads) {
@@ -213,8 +217,8 @@ void Town::finishCreate() {
         this->adjMat[index(b1, b2, numBuildings)] = length;
         this->adjMat[index(b2, b1, numBuildings)] = length;
 
-        adjList[b1].push_back(b2);
-        adjList[b2].push_back(b1);
+        this->adjList[b1].push_back(b2);
+        this->adjList[b2].push_back(b1);
     }
 }
 

@@ -24,7 +24,7 @@ Renderer::Renderer() {
     height = GetScreenHeight();
     ToggleFullscreen();
 
-    Image icon = LoadImage("assets/icon.png");   
+    Image icon = LoadImage("assets/icon.png");
     SetWindowIcon(icon);
     
     SetTargetFPS(60);
@@ -127,7 +127,7 @@ void Renderer::render(float deltaTime) {
     int fontSize = 36;
     // Time
     const char* time = ("TIME " + std::to_string(Town::Instance()->time)).c_str();
-    DrawText(time, width - 170, 15, fontSize, GREEN);
+    DrawText(time, width - 170, 15, fontSize, BLUE);
 
     // Phase
     const char* phase;
@@ -144,6 +144,18 @@ void Renderer::render(float deltaTime) {
     }
     int phaseWidth = MeasureText(phase, fontSize);
     DrawText(phase, width - phaseWidth - 25, 45, fontSize, GREEN);
+
+    // Draw num people left:
+    int numPeople = Town::Instance()->getPeople().size();
+    int totalNumPeople = Town::Instance()->totalNumPeople;
+
+    const char* numPeopleText = (std::to_string(numPeople) + " People Left").c_str();
+
+    int numWidth = MeasureText(numPeopleText, fontSize);
+    unsigned char g_ratio = ((double)numPeople) / ((double)totalNumPeople) * 255.0;
+    unsigned char r_ratio = 255-g_ratio;
+    Color c = {r_ratio, g_ratio, 0, 255};
+    DrawText(numPeopleText, width-numWidth-30, 125, fontSize, c);
 
     // If show FPS is on, draw the FPS
     if (showFPS) {
@@ -196,28 +208,45 @@ void Renderer::mainloop() {
         if (camera.zoom > 3.0f) camera.zoom = 3.0f;
         else if (camera.zoom < 0.1f) camera.zoom = 0.1f;
 
-        // Update moves
-        std::vector<Move> newMoves;
-        for (int i = 0; i < moves.size(); i++) {
-            Vector2 delta = (moves[i].end-moves[i].start);
-            delta /= (float)timestep;
-            moves[i].pos += delta;
-            moves[i].frame++;
-            if (moves[i].frame != timestep) {
-                newMoves.push_back(moves[i]);
-            }
-        }
-        moves = newMoves;
-
         if (IsKeyDown(KEY_F)) {
             ToggleFullscreen();
+        }
+        pause = IsKeyDown(KEY_SPACE);
+
+        // Reset camera
+        if (IsKeyDown(KEY_R)) {
+            camera.offset = -Town::Instance()->townCentre + this->centre;
+            camera.target = Town::Instance()->townCentre;
+            camera.zoom = 1.0f;
         }
 
         // Time in seconds since last frame
         float dt = GetFrameTime();
 
-        // Update town simulation
-        Town::Instance()->update(this, dt);
+        if (!pause) {
+            // Update moves
+            std::vector<Move> newMoves;
+            for (int i = 0; i < moves.size(); i++) {
+                Vector2 delta = (moves[i].end-moves[i].start);
+                delta /= (float)timestep;
+                moves[i].pos += delta;
+                moves[i].frame++;
+                if (moves[i].frame != timestep) {
+                    newMoves.push_back(moves[i]);
+                } else {
+                    // Update building entity count
+                    if (moves[i].zombie) {
+                        moves[i].update->visNumZombies++;
+                    } else {
+                        moves[i].update->visNumPeople++;
+                    }
+                }
+            }
+            moves = newMoves;
+
+            // Update town simulation
+            Town::Instance()->update(this, dt);
+        }
 
         // Render town
         render(dt);
@@ -229,8 +258,15 @@ void Renderer::moveEntityBetween(Building* b1, Building* b2, bool zombie) {
         Move m;
         m.pos = m.start = b1->position;
         m.end = b2->position;
+        m.update = b2;
         m.frame = 0;
         m.zombie = zombie;
         moves.push_back(m);
+        // Visualise entity move after move animates
+        if (zombie) {
+            b2->visNumZombies--;
+        } else {
+            b2->visNumPeople--;
+        }
     }
 }
